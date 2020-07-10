@@ -1,0 +1,48 @@
+version: '3.2'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        APP_ENV: ${APP_ENV}
+        XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
+        XDEBUG_REMOTE_ENABLE: ${XDEBUG_REMOTE_ENABLE}
+        XDEBUG_REMOTE_AUTOSTART: ${XDEBUG_REMOTE_AUTOSTART}
+        XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
+        XDEBUG_IDEKEY: ${XDEBUG_IDEKEY}
+        XDEBUG_REMOTE_PORT: ${XDEBUG_REMOTE_PORT}
+        XDEBUG_PROFILER_ENABLE: ${XDEBUG_PROFILER_ENABLE}
+        XDEBUG_PROFILER_ENABLE_TRIGGER: ${XDEBUG_PROFILER_ENABLE_TRIGGER}
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV
+    expose:
+      - "9000"
+    entrypoint: ./docker-entrypoint.sh
+    user: "$UID:$UID"
+  nginx:
+    image: 4xxi/nginx:flex
+    depends_on:
+      - php
+    ports:
+      - "${SERVER_HTTP_PORT}:80"
+    volumes:
+      - .:/var/www/html
+      - ./var/log:/var/log/nginx
+  db:
+    image: "postgres:9"
+    ports:
+      - "${DATABASE_EXTERNAL_PORT}:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+volumes:
+  db:
