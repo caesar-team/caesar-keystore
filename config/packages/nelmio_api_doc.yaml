@@ -1,0 +1,16 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Caesar Keystore
+            version: 1.0.0
+        securityDefinitions:
+            Token:
+                type: apiKey
+                description: 'Value: Token'
+                name: Authorization
+                in: header
+        security:
+            - Token: []
+    areas:
+        path_patterns:
+            - ^/api(?!/doc$)

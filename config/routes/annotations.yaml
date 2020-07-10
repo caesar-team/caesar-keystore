@@ -8,7 +8,3 @@ api:
     name_prefix: api_
     type: annotation
     trailing_slash_on_root: false
-
-kernel:
-    resource: ../../src/Kernel.php
-    type: annotation

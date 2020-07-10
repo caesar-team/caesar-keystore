@@ -4,15 +4,12 @@ WORKDIR /var/www/html
 
 RUN apk --update add \
     build-base \
-    gpgme-dev \
-    gpgme \
     autoconf \
     libzip-dev \
+    postgresql-dev \
     zip
 
-RUN pecl install gnupg redis \
-    && docker-php-ext-enable gnupg redis \
-    && docker-php-ext-install sockets zip
+RUN docker-php-ext-install sockets zip pdo pdo_pgsql
 
 RUN echo "memory_limit=512M" >> /usr/local/etc/php/php.ini
 
