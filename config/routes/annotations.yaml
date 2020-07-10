@@ -2,6 +2,13 @@ controllers:
     resource: ../../src/Controller/
     type: annotation
 
+api:
+    resource: ../../src/Controller/Api/
+    prefix: /api
+    name_prefix: api_
+    type: annotation
+    trailing_slash_on_root: false
+
 kernel:
     resource: ../../src/Kernel.php
     type: annotation
