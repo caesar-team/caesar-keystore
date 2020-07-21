@@ -4,15 +4,12 @@ WORKDIR /var/www/html
 
 RUN apk --update add \
     build-base \
-    gpgme-dev \
-    gpgme \
     autoconf \
     libzip-dev \
+    postgresql-dev \
     zip
 
-RUN pecl install gnupg redis \
-    && docker-php-ext-enable gnupg redis \
-    && docker-php-ext-install sockets zip
+RUN docker-php-ext-install sockets zip pdo pdo_pgsql
 
 ARG XDEBUG_REMOTE_HOST=172.17.0.1
 ARG XDEBUG_REMOTE_ENABLE=1

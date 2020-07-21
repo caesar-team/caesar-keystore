@@ -10,6 +10,7 @@ return PhpCsFixer\Config::create()
         '@PHP71Migration' => true,
         '@DoctrineAnnotation' => true,
         'phpdoc_order' => true,
+        'single_line_throw' => false,
         'array_syntax' => ['syntax' => 'short'],
     ])
     ->setFinder($finder)

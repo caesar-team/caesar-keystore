@@ -7,13 +7,13 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class KeysController extends AbstractController
+class HealthController extends AbstractController
 {
     /**
      * @Route(path="/", methods={"GET"})
      */
     public function index(): JsonResponse
     {
-        return new JsonResponse();
+        return new JsonResponse(['status' => 'ok']);
     }
 }

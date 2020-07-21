@@ -18,7 +18,12 @@ docker-sync-stack start
 docker-compose exec php composer install
 ```
 
-### 3. Open project
+### 3. Run migrations, install required default fixtures
+```bash
+docker-compose exec php bin/console doctrine:migrations:migrate
+```
+
+### 4. Open project
 Just go to [http://localhost:8090](http://localhost:8090)
 
 

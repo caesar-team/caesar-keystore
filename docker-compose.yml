@@ -21,6 +21,7 @@ services:
       - .:/var/www/html
     environment:
       - APP_ENV
+      - PHP_IDE_CONFIG
     expose:
       - "9000"
     entrypoint: ./docker-entrypoint.sh
