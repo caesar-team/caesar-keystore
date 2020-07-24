@@ -1,0 +1,2 @@
+rest_request_error:
+  use_exception_listener: true
