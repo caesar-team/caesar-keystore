@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Caesar\CaesarServerRpcInterface;
 use App\Controller\AbstractController;
 use App\Factory\View\KeysViewFactory;
 use App\Factory\View\PublicKeyViewFactory;
@@ -39,7 +40,7 @@ class KeysController extends AbstractController
      *     @Model(type=KeysView::class)
      * )
      * @SWG\Response(
-     *     response=204,
+     *     response=404,
      *     description="User has no keys"
      * )
      *
@@ -52,8 +53,11 @@ class KeysController extends AbstractController
     public function keyList(KeysViewFactory $viewFactory, KeyRepositoryInterface $repository): KeysView
     {
         $key = $repository->getKeyByEmail($this->getUser()->getEmail());
+        if (null === $key) {
+            throw new NotFoundHttpException();
+        }
 
-        return $key ? $viewFactory->createSingle($key) : new KeysView();
+        return $viewFactory->createSingle($key);
     }
 
     /**
@@ -66,8 +70,9 @@ class KeysController extends AbstractController
      *     @Model(type=SaveKeysType::class)
      * )
      * @SWG\Response(
-     *     response=204,
+     *     response=200,
      *     description="Success keys update",
+     *     @Model(type=KeysView::class)
      * )
      *
      * @Route(
@@ -79,7 +84,8 @@ class KeysController extends AbstractController
     public function saveKeys(
         Request $request,
         KeysViewFactory $viewFactory,
-        KeysModifier $modifier
+        KeysModifier $modifier,
+        CaesarServerRpcInterface $caesarServerRpc
     ): KeysView {
         $keysRequest = new KeysRequest(
             $this->getUser()->getEmail(),
@@ -92,6 +98,7 @@ class KeysController extends AbstractController
             throw new FormInvalidRequestException($form);
         }
 
+        $caesarServerRpc->changedUserKeys($keysRequest->getUserId());
         $key = $modifier->createOrUpdateByRequest($keysRequest);
 
         return $viewFactory->createSingle($key);
@@ -175,8 +182,9 @@ class KeysController extends AbstractController
      *     @Model(type=SaveKeysType::class)
      * )
      * @SWG\Response(
-     *     response=204,
+     *     response=200,
      *     description="Success keys update",
+     *     @Model(type=KeysView::class)
      * )
      *
      * @Route(
@@ -189,7 +197,8 @@ class KeysController extends AbstractController
         string $email,
         Request $request,
         KeysViewFactory $viewFactory,
-        KeysModifier $modifier
+        KeysModifier $modifier,
+        CaesarServerRpcInterface $caesarServerRpc
     ): KeysView {
         $keysRequest = new KeysRequest($email);
 
@@ -200,6 +209,7 @@ class KeysController extends AbstractController
         }
 
         try {
+            $caesarServerRpc->updatedUserKeys($keysRequest->getUserId());
             $key = $modifier->createByRequest($keysRequest);
         } catch (\InvalidArgumentException  $exception) {
             throw new AccessDeniedException();

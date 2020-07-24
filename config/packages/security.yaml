@@ -14,5 +14,5 @@ security:
                 authenticators:
                     - App\Security\TokenAuthenticator
     access_control:
-        - { path: ^/api, roles: ROLE_USER }
         - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: ROLE_USER }
